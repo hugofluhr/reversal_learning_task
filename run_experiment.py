@@ -32,12 +32,15 @@ def experiment():
     win.flip()
     event.waitKeys()
 
+    # create a file to store data
+    log_file = open('elsa_data.csv', 'w')
+    log_file.write('trial_nr,correct\n')
+
     # create trial handler
     trial_handler = data.TrialHandler(trials, nReps=1, method='sequential')
 
     # actual experiment
-    for trial in trial_handler:
-        state = trial['state']
+    for trial_nr, trial in enumerate(trial_handler):
         correct_shape = trial['correct_shape']
         correct_shape_position = trial['correct_shape_position']
 
@@ -65,6 +68,9 @@ def experiment():
         correct = 1 if response == 'left' and correct_shape_position == 1 or \
                        response == 'right' and correct_shape_position == 0 else 0
 
+        # write to log file
+        log_file.write(f'{trial_nr},{correct}\n')
+        
         # give feedback
         feedback = visual.TextStim(win, text='+ 100' if correct else '+ 0',
                                    pos=(0, 0), color=(1, 1, 1), height=50, wrapWidth=1000)
