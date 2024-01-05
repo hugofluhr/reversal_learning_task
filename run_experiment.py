@@ -1,4 +1,4 @@
-from psychopy import visual, event, core
+from psychopy import visual, event, core, data
 import numpy as np
 
 def experiment():
@@ -32,63 +32,76 @@ def experiment():
     win.flip()
     event.waitKeys()
 
+    # create trial handler
+    trial_handler = data.TrialHandler(trials, nReps=1, method='sequential')
+
     # actual experiment
-    for state in ['pre', 'post']:
-        correct_shape = trials[state]['correct_shape']
-        for trial in range(len(trials[state]['correct_shape_position'])):
-            # draw fixation dot
-            fix.draw()
-            win.flip()
-            core.wait(0.5)
+    for trial in trial_handler:
+        state = trial['state']
+        correct_shape = trial['correct_shape']
+        correct_shape_position = trial['correct_shape_position']
 
-            # create shapes at correct position depending on conditions
-            circle_pos = (-200, 0) if (correct_shape == 'circle') == (trials[state]['correct_shape_position'][trial] == 1) else (200, 0)
-            square_pos = (200, 0) if (correct_shape == 'circle') == (trials[state]['correct_shape_position'][trial] == 1) else (-200, 0)
-            circle = visual.Circle(win, radius=75, fillColor=(1, 0, 0), pos=circle_pos)
-            square = visual.Rect(win, width=150, height=150, fillColor=(0, 1, 0), pos=square_pos)
+        # draw fixation dot
+        fix.draw()
+        win.flip()
+        core.wait(0.5)
 
-            # draw shapes
-            circle.draw()
-            square.draw()
-            win.flip()
+        # create shapes at correct position depending on conditions
+        circle_pos = (-200, 0) if (correct_shape == 'circle') == (correct_shape_position == 1) else (200, 0)
+        square_pos = (200, 0) if (correct_shape == 'circle') == (correct_shape_position == 1) else (-200, 0)
+        circle = visual.Circle(win, radius=75, fillColor=(1, 0, 0), pos=circle_pos)
+        square = visual.Rect(win, width=150, height=150, fillColor=(0, 1, 0), pos=square_pos)
 
-            # get response
-            keys = event.waitKeys(keyList=['f', 'j'])
-            response = 'left' if keys[0] == 'f' else 'right'
+        # draw shapes
+        circle.draw()
+        square.draw()
+        win.flip()
 
-            # check if correct
-            correct = 1 if response == 'left' and trials[state]['correct_shape_position'][trial] == 1 or \
-                           response == 'right' and trials[state]['correct_shape_position'][trial] == 0 else 0
+        # get response
+        keys = event.waitKeys(keyList=['f', 'j'])
+        response = 'left' if keys[0] == 'f' else 'right'
 
-            # give feedback
-            feedback = visual.TextStim(win, text='+ 100' if correct else '+ 0',
-                                       pos=(0, 0), color=(1, 1, 1), height=50, wrapWidth=1000)
-            feedback.draw()
-            win.flip()
-            core.wait(0.5)
+        # check if correct
+        correct = 1 if response == 'left' and correct_shape_position == 1 or \
+                       response == 'right' and correct_shape_position == 0 else 0
 
-            # ITI
-            fix.draw()
-            win.flip()
-            core.wait(0.5)
+        # give feedback
+        feedback = visual.TextStim(win, text='+ 100' if correct else '+ 0',
+                                   pos=(0, 0), color=(1, 1, 1), height=50, wrapWidth=1000)
+        feedback.draw()
+        win.flip()
+        core.wait(0.5)
 
-def generate_trials(max_trials=50):
+        # ITI
+        fix.draw()
+        win.flip()
+        core.wait(0.5)
+
+def generate_trials(trials_per_phase=50):
     """
     Function to generate trials for both pre and post reversal
-    returns trials, a dictionary with pre and post reversal trials
     """
+
+    # choose which shape is correct for pre and post reversal
     correct_shape_pre = np.random.choice(['circle', 'square'])
     correct_shape_post = 'square' if correct_shape_pre == 'circle' else 'circle'
 
-    half_max_trials = max_trials // 2
-    shape_placement = np.concatenate([np.ones(half_max_trials), np.zeros(max_trials-half_max_trials)])
-    correct_shape_position_pre = np.random.permutation(shape_placement)
-    correct_shape_position_post = np.random.permutation(shape_placement)
+    # randomize the positions of the shapes, it's randomized within each phase
+    half_trials = trials_per_phase // 2
+    shape_positions = np.concatenate([np.ones(half_trials), np.zeros(trials_per_phase-half_trials)])
+    correct_shape_position_pre = np.random.permutation(shape_positions)
+    correct_shape_position_post = np.random.permutation(shape_positions)
 
-    trials = {'pre': {'correct_shape': correct_shape_pre,
-                      'correct_shape_position': correct_shape_position_pre},
-              'post': {'correct_shape': correct_shape_post,
-                       'correct_shape_position': correct_shape_position_post}}
+    # create trials
+    trials = []
+    for i in range(trials_per_phase):
+        trial = {'state': 'pre', 'correct_shape': correct_shape_pre,
+                 'correct_shape_position': correct_shape_position_pre[i]}
+        trials.append(trial)
+    for i in range(trials_per_phase):
+        trial = {'state': 'post', 'correct_shape': correct_shape_post,
+                 'correct_shape_position': correct_shape_position_post[i]}
+        trials.append(trial)
 
     return trials
 
