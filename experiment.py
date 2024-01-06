@@ -26,7 +26,7 @@ def experiment(participant_name, output_dir, trials_per_phase, p_correct, p_inco
 
     # first instructions
     instruction_text1 = """In this experiment, you need to choose between two shapes using the [F] and [J] keys of the keyboard for the left and right options respectively.\n
-    Pick the shape that gives the largest reward.\n
+    Your goal is to maximize your points.\n\n
     Press any key to continue."""
     instructions1 = visual.TextStim(
         win,
