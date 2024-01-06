@@ -2,14 +2,16 @@ from psychopy import visual, event, core, data
 import numpy as np
 import os
 
-def experiment(participant_name, output_dir='data/', trials_per_phase=100):
+def experiment(participant_name, output_dir, trials_per_phase, p_correct, p_incorrect):
     """
     Main function for the experiment
 
     Args
         participant_name (string): The name of the participant
-        output_dir (string): The directory where the experiment output will be saved (default: 'data/')
-        trials_per_phase (int): The number of trials to run in the experiment (default: 100)
+        output_dir (string): The directory where the experiment output will be saved
+        trials_per_phase (int): The number of trials to run in the experiment
+        p_correct (float): Probability of receiving a correct reward.
+        p_incorrect (float): Probability of receiving an incorrect reward.
     """
 
     win = visual.Window(
@@ -20,7 +22,7 @@ def experiment(participant_name, output_dir='data/', trials_per_phase=100):
     fix = visual.Circle(win, radius=5, color=(1, 1, 1))
 
     # generate trials
-    trials = generate_trials(trials_per_phase)
+    trials = generate_trials(trials_per_phase, p_correct, p_incorrect)
 
     # first instructions
     instruction_text1 = """In this experiment, you need to choose between two shapes using the [F] and [J] keys of the keyboard for the left and right options respectively.\n
@@ -177,12 +179,15 @@ def experiment(participant_name, output_dir='data/', trials_per_phase=100):
     log_file.close()
     core.quit()
 
-def generate_trials(trials_per_phase=50):
+def generate_trials(trials_per_phase, p_correct, p_incorrect):
     """
     Generates trials for both pre and post reversal phases
     
     Args:
-        trials_per_phase (int): Number of trials per phase. Default is 50.
+        trials_per_phase (int): Number of trials per phase.
+        p_correct (float): Probability of receiving a correct reward.
+        p_incorrect (float): Probability of receiving an incorrect reward.
+        
     
     Returns:
         list: List of trial dictionaries containing information about each trial.
@@ -225,8 +230,8 @@ def generate_trials(trials_per_phase=50):
 
     # add stochastic rewards
     for trial in trials:
-        trial["correct_reward"] = stochastic_rewards(0.8)
-        trial["incorrect_reward"] = stochastic_rewards(0.2)
+        trial["correct_reward"] = stochastic_rewards(p_correct)
+        trial["incorrect_reward"] = stochastic_rewards(p_incorrect)
 
     return trials
 
@@ -245,13 +250,13 @@ def stochastic_rewards(p_reward):
     else:
         return 0
     
-def create_log_file(participant_name, output_dir='data/'):
+def create_log_file(participant_name, output_dir):
     """
     Creates a log file name
     
     Args
         participant_name (string): Name of the participant
-        output_dir (string): Directory where the log file will be created (default is 'data/')
+        output_dir (string): Directory where the log file will be created')
     
     Returns
         Path of the created log file
