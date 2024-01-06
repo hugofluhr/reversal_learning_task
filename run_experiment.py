@@ -15,7 +15,7 @@ def experiment():
     fix = visual.Circle(win, radius=10, color=(1, 1, 1))
 
     # generate trials
-    trials = generate_trials(4)
+    trials = generate_trials(10)
 
     # first instructions
     instruction_text1 = """In this experiment, you need to choose between two shapes using the [F] and [J] keys of the keyboard for the left and right options respectively.\n
@@ -92,6 +92,8 @@ def experiment():
         # get response within a time window
         # create a new clock at each trial to reset the time
         response_clock = core.Clock()
+
+        # wait for response and record it
         keys = event.waitKeys(
             keyList=["f", "j"], maxWait=1.5, timeStamped=response_clock
         )  # Reset the clock and clear previous events
@@ -101,17 +103,6 @@ def experiment():
         else:
             response = "no response"
             response_time = None
-            feedback = visual.TextStim(
-                win,
-                text="Too Slow!",
-                pos=(0, 0),
-                color=(1, 1, 1),
-                height=50,
-                wrapWidth=1000,
-            )
-            feedback.draw()
-            win.flip()
-            core.wait(0.5)
 
         # check if correct
         correct = (
@@ -125,15 +116,18 @@ def experiment():
 
         # write to log file
         log_file.write(
-            f'{trial_nr},{trial["state"]},{correct_shape},{correct_shape_position},{response},{correct},{response_time},{trial["correct_reward"]},{trial["correct_reward"]}\n'
+            f'{trial_nr},{trial["state"]},{correct_shape},{correct_shape_position},{response},{correct},{response_time},{trial["correct_reward"]},{trial["incorrect_reward"]}\n'
         )
 
         # give feedback
+        if response_time is not None:
+            feedback_text = "+ {}".format(trial["correct_reward"]) if correct else "+ {}".format(trial["incorrect_reward"])
+        else:
+            feedback_text = "Too slow!\n\n+ 0"
+
         feedback = visual.TextStim(
             win,
-            text="+ {}".format(trial["correct_reward"])
-            if correct
-            else "+ {}".format(trial["incorrect_reward"]),
+            text=feedback_text,
             pos=(0, 0),
             color=(1, 1, 1),
             height=50,
@@ -160,7 +154,7 @@ def experiment():
     )
     instructions3.draw()
     win.flip()
-    core.wait(1)
+    core.wait(1.5)
 
     # close the log file and quit psychopy
     log_file.close()
