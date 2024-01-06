@@ -1,5 +1,6 @@
 from psychopy import visual, event, core, data
 import numpy as np
+from textwrap import dedent
 
 def experiment():
     """
@@ -11,7 +12,7 @@ def experiment():
     fix = visual.Circle(win, radius=10, color=(1, 1, 1))
 
     # generate trials
-    trials = generate_trials(2)
+    trials = generate_trials(4)
 
     # first instructions
     instruction_text1 ='''In this experiment, you need to choose between two shapes using the [F] and [J] keys of the keyboard for the left and right options respectively.\n
@@ -34,7 +35,7 @@ def experiment():
 
     # create a file to store data
     log_file = open('elsa_data.csv', 'w')
-    log_file.write('trial_nr,state,correct_shape,correct_shape_position,response,correct,response_time\n')
+    log_file.write('trial_nr,state,correct_shape,correct_shape_position,response,correct,response_time,correct_reward,incorrect_reward\n')
 
     # create trial handler
     trial_handler = data.TrialHandler(trials, nReps=1, method='sequential')
@@ -61,8 +62,9 @@ def experiment():
         win.flip()
 
         # get response within a time window
+        # create a new clock at each trial to reset the time
         response_clock = core.Clock()
-        keys = event.waitKeys(keyList=['f', 'j'], maxWait=2.0, timeStamped=response_clock)  # Reset the clock and clear previous events
+        keys = event.waitKeys(keyList=['f', 'j'], maxWait=1.5, timeStamped=response_clock)  # Reset the clock and clear previous events
         if keys:
             response = 'left' if keys[0][0] == 'f' else 'right'
             response_time = keys[0][1]
@@ -79,10 +81,11 @@ def experiment():
                        response == 'right' and correct_shape_position == 0 else 0
 
         # write to log file
-        log_file.write(f'{trial_nr},{trial["state"]},{correct_shape},{correct_shape_position},{response},{correct},{response_time}\n')
+        log_file.write(dedent(f'{trial_nr},{trial["state"]},{correct_shape},{correct_shape_position},
+                       {response},{correct},{response_time},{trial["correct_reward"]},{trial["correct_reward"]}\n'))
 
         # give feedback
-        feedback = visual.TextStim(win, text='+ 100' if correct else '+ 0',
+        feedback = visual.TextStim(win, text='+ {}'.format(trial['correct_reward']) if correct else '+ {}'.format(trial['incorrect_reward']),
                                    pos=(0, 0), color=(1, 1, 1), height=50, wrapWidth=1000)
         feedback.draw()
         win.flip()
@@ -93,7 +96,19 @@ def experiment():
         win.flip()
         core.wait(0.5)
 
-def generate_trials(trials_per_phase=50):
+    # end of experiment
+    instruction_text3 = 'Thank you for your participation!'
+    instructions3 = visual.TextStim(win, text=instruction_text3, pos=(0, 150), color=(1, 1, 1), height=50, wrapWidth=1000)
+    instructions3.draw()
+    win.flip()
+    core.wait(1)  
+
+    # close the log file and quit psychopy
+    log_file.close()
+    core.quit()
+
+
+def generate_trials(trials_per_phase=50, reward_ranges=((0,60),(40,100))):
     """
     Function to generate trials for both pre and post reversal
     """
@@ -118,6 +133,11 @@ def generate_trials(trials_per_phase=50):
         trial = {'state': 'post', 'correct_shape': correct_shape_post,
                  'correct_shape_position': correct_shape_position_post[i]}
         trials.append(trial)
+
+    # add probabilistic rewards
+    for trial in trials:
+        trial['correct_reward'] = np.random.randint(*reward_ranges[1])
+        trial['incorrect_reward'] = np.random.randint(*reward_ranges[0])
 
     return trials
 
