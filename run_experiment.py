@@ -11,7 +11,7 @@ def experiment():
     fix = visual.Circle(win, radius=10, color=(1, 1, 1))
 
     # generate trials
-    trials = generate_trials(6)
+    trials = generate_trials(2)
 
     # first instructions
     instruction_text1 ='''In this experiment, you need to choose between two shapes using the [F] and [J] keys of the keyboard for the left and right options respectively.\n
@@ -34,7 +34,7 @@ def experiment():
 
     # create a file to store data
     log_file = open('elsa_data.csv', 'w')
-    log_file.write('trial_nr,correct\n')
+    log_file.write('trial_nr,state,correct_shape,correct_shape_position,response,correct,response_time\n')
 
     # create trial handler
     trial_handler = data.TrialHandler(trials, nReps=1, method='sequential')
@@ -60,17 +60,27 @@ def experiment():
         square.draw()
         win.flip()
 
-        # get response
-        keys = event.waitKeys(keyList=['f', 'j'])
-        response = 'left' if keys[0] == 'f' else 'right'
+        # get response within a time window
+        response_clock = core.Clock()
+        keys = event.waitKeys(keyList=['f', 'j'], maxWait=2.0, timeStamped=response_clock)  # Reset the clock and clear previous events
+        if keys:
+            response = 'left' if keys[0][0] == 'f' else 'right'
+            response_time = keys[0][1]
+        else:
+            response = 'no response'
+            response_time = None
+            feedback = visual.TextStim(win, text='Too Slow!', pos=(0, 0), color=(1, 1, 1), height=50, wrapWidth=1000)
+            feedback.draw()
+            win.flip()
+            core.wait(0.5)
 
         # check if correct
         correct = 1 if response == 'left' and correct_shape_position == 1 or \
                        response == 'right' and correct_shape_position == 0 else 0
 
         # write to log file
-        log_file.write(f'{trial_nr},{correct}\n')
-        
+        log_file.write(f'{trial_nr},{trial["state"]},{correct_shape},{correct_shape_position},{response},{correct},{response_time}\n')
+
         # give feedback
         feedback = visual.TextStim(win, text='+ 100' if correct else '+ 0',
                                    pos=(0, 0), color=(1, 1, 1), height=50, wrapWidth=1000)
