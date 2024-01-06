@@ -52,7 +52,7 @@ def experiment():
     # create a file to store data
     log_file = open("elsa_data.csv", "w")
     log_file.write(
-        "trial_nr,state,correct_shape,correct_shape_position,response,correct,response_time,correct_reward,incorrect_reward\n"
+        "trial_nr,state,correct_shape,correct_shape_position,correct_reward,incorrect_reward,response,correct,rewarded,response_time\n"
     )
 
     # create trial handler
@@ -113,15 +113,26 @@ def experiment():
             and correct_shape_position == 0
             else 0
         )
+        # check if rewarded
+        rewarded = (
+            1
+            if correct
+            and trial["correct_reward"]
+            or not correct
+            and trial["incorrect_reward"]
+            else 0
+        )
 
         # write to log file
         log_file.write(
-            f'{trial_nr},{trial["state"]},{correct_shape},{correct_shape_position},{response},{correct},{response_time},{trial["correct_reward"]},{trial["incorrect_reward"]}\n'
+            f'{trial_nr},{trial["state"]},{correct_shape},{correct_shape_position},{trial["correct_reward"]},{trial["incorrect_reward"]},{response},{correct},{rewarded},{response_time}\n'
         )
 
         # give feedback
         if response_time is not None:
-            feedback_text = "+ {}".format(trial["correct_reward"]) if correct else "+ {}".format(trial["incorrect_reward"])
+            feedback_text = (
+                "+ {rewarded * 100}"
+            )
         else:
             feedback_text = "Too slow!\n\n+ 0"
 
@@ -154,7 +165,7 @@ def experiment():
     )
     instructions3.draw()
     win.flip()
-    core.wait(1.5)
+    core.wait(2)
 
     # close the log file and quit psychopy
     log_file.close()
@@ -195,12 +206,22 @@ def generate_trials(trials_per_phase=50, reward_ranges=((0, 60), (40, 100))):
         }
         trials.append(trial)
 
-    # add probabilistic rewards
+    # add stochastic rewards
     for trial in trials:
-        trial["correct_reward"] = np.random.randint(*reward_ranges[1])
-        trial["incorrect_reward"] = np.random.randint(*reward_ranges[0])
+        trial["correct_reward"] = stochastic_rewards(0.7)
+        trial["incorrect_reward"] = stochastic_rewards(0.3)
 
     return trials
+
+
+def stochastic_rewards(p_reward):
+    """
+    Function to generate stochastic rewards
+    """
+    if np.random.random() < p_reward:
+        return 1
+    else:
+        return 0
 
 
 if __name__ == "__main__":
