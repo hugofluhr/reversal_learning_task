@@ -2,7 +2,7 @@ from psychopy import visual, event, core, data
 import numpy as np
 import os
 
-def experiment(participant_name, output_dir, trials_per_phase, p_correct, p_incorrect):
+def experiment(participant_name, output_dir, trials_per_phase, p_correct, p_incorrect, response_window):
     """
     Main function for the experiment
 
@@ -12,6 +12,7 @@ def experiment(participant_name, output_dir, trials_per_phase, p_correct, p_inco
         trials_per_phase (int): The number of trials to run in the experiment
         p_correct (float): Probability of receiving a correct reward.
         p_incorrect (float): Probability of receiving an incorrect reward.
+        response_window (float): The time window for the participant to respond to a trial (in seconds).
     """
 
     win = visual.Window(
@@ -60,7 +61,7 @@ def experiment(participant_name, output_dir, trials_per_phase, p_correct, p_inco
     log_file_path = create_log_file(participant_name, output_dir)
     log_file = open(log_file_path, "w")
     log_file.write(
-        "trial_nr,state,correct_shape,correct_shape_position,correct_reward,incorrect_reward,response,correct,rewarded,response_time\n"
+        "trial_nr,phase,correct_shape,correct_shape_position,correct_reward,incorrect_reward,response,correct,rewarded,response_time\n"
     )
 
     # create trial handler
@@ -87,9 +88,9 @@ def experiment(participant_name, output_dir, trials_per_phase, p_correct, p_inco
             if (correct_shape == "circle") == (correct_shape_position == 1)
             else (-200, 0)
         )
-        circle = visual.Circle(win, radius=75, fillColor=(1, 0, 0), pos=circle_pos)
+        circle = visual.Circle(win, radius=75, fillColor=(1, 1, 0), pos=circle_pos)
         square = visual.Rect(
-            win, width=150, height=150, fillColor=(0, 1, 0), pos=square_pos
+            win, width=150, height=150, fillColor=(0, 0, 1), pos=square_pos
         )
 
         # draw shapes
@@ -103,7 +104,7 @@ def experiment(participant_name, output_dir, trials_per_phase, p_correct, p_inco
 
         # wait for response and record it
         keys = event.waitKeys(
-            keyList=["f", "j"], maxWait=1.5, timeStamped=response_clock
+            keyList=["f", "j"], maxWait=response_window, timeStamped=response_clock
         )  # Reset the clock and clear previous events
         if keys:
             response = "left" if keys[0][0] == "f" else "right"
