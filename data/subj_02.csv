@@ -1,0 +1,61 @@
+trial_nr,phase,correct_shape,correct_shape_position,correct_reward,incorrect_reward,response,correct,rewarded,response_time
+0,pre,square,1.0,1,1,no response,0,1,None
+1,pre,square,1.0,0,0,left,1,0,0.5332452500006184
+2,pre,square,0.0,1,0,right,1,1,0.5453768750012387
+3,pre,square,1.0,1,0,no response,0,0,None
+4,pre,square,0.0,1,0,left,0,0,0.7609223750041565
+5,pre,square,1.0,0,1,right,0,1,0.5967342500080122
+6,pre,square,0.0,1,1,right,1,1,0.6437620000069728
+7,pre,square,1.0,1,0,no response,0,0,None
+8,pre,square,1.0,1,0,right,0,0,0.4921596666536061
+9,pre,square,1.0,0,0,left,1,0,0.5551777499931632
+10,pre,square,1.0,1,1,right,0,1,0.4585451250022743
+11,pre,square,0.0,1,0,right,1,1,0.5178943749924656
+12,pre,square,0.0,1,0,left,0,0,0.8508770000044024
+13,pre,square,1.0,1,0,left,1,1,0.8581186666706344
+14,pre,square,1.0,1,0,right,0,0,0.985061791667249
+15,pre,square,1.0,1,0,left,1,1,0.6640314583200961
+16,pre,square,0.0,0,1,left,0,1,0.9955527916608844
+17,pre,square,0.0,1,0,right,1,1,0.4575449166732142
+18,pre,square,1.0,1,0,no response,0,0,None
+19,pre,square,0.0,1,1,left,0,1,0.7888164583273465
+20,pre,square,1.0,0,0,left,1,0,0.6537467499874765
+21,pre,square,0.0,0,0,left,0,0,0.6491109999915352
+22,pre,square,0.0,1,0,right,1,1,0.5114366666675778
+23,pre,square,0.0,0,0,left,0,0,0.6818412916763918
+24,pre,square,0.0,1,0,right,1,1,0.7030749166733585
+25,pre,square,0.0,0,0,left,0,0,0.7950795416691108
+26,pre,square,1.0,1,0,left,1,1,0.8205611250014044
+27,pre,square,1.0,1,0,right,0,0,0.9076837916654767
+28,pre,square,0.0,1,1,no response,0,1,None
+29,pre,square,0.0,1,0,right,1,1,0.4206714166502934
+30,post,circle,0.0,1,0,no response,0,0,None
+31,post,circle,0.0,1,0,right,1,1,0.3800260833231732
+32,post,circle,0.0,1,0,left,0,0,0.6270227500062902
+33,post,circle,0.0,1,0,right,1,1,0.782446750003146
+34,post,circle,1.0,1,0,right,0,0,0.913571666678763
+35,post,circle,1.0,1,0,no response,0,0,None
+36,post,circle,1.0,1,0,left,1,1,0.3857518749864539
+37,post,circle,0.0,1,0,right,1,1,0.9759549166628858
+38,post,circle,1.0,1,0,left,1,1,0.7015684583457187
+39,post,circle,0.0,1,0,right,1,1,0.9222816249966854
+40,post,circle,1.0,1,1,right,0,1,0.5019609583250713
+41,post,circle,0.0,1,0,left,0,0,0.9882771666743793
+42,post,circle,0.0,1,0,right,1,1,0.6102921249985229
+43,post,circle,0.0,1,0,no response,0,0,None
+44,post,circle,1.0,0,0,left,1,0,0.3365513749886304
+45,post,circle,0.0,1,0,no response,0,0,None
+46,post,circle,0.0,1,0,right,1,1,0.4070084583363496
+47,post,circle,0.0,0,0,left,0,0,0.6041113333340036
+48,post,circle,0.0,1,0,right,1,1,0.4256582083471585
+49,post,circle,1.0,1,0,no response,0,0,None
+50,post,circle,1.0,1,0,no response,0,0,None
+51,post,circle,0.0,1,1,right,1,1,0.7279632916761329
+52,post,circle,1.0,0,0,no response,0,0,None
+53,post,circle,1.0,1,1,right,0,1,0.41808083333307877
+54,post,circle,1.0,1,0,left,1,1,0.5574833333375864
+55,post,circle,0.0,1,0,right,1,1,0.4669318333326373
+56,post,circle,1.0,1,0,left,1,1,0.4071527916676132
+57,post,circle,1.0,1,1,no response,0,1,None
+58,post,circle,1.0,1,0,right,0,0,0.34137725000618957
+59,post,circle,1.0,0,0,left,1,0,0.3398657500074478
