@@ -20,7 +20,8 @@ The reversal learning task consists in learning a stimulus outcome association d
 - Choices
 
 ## Running the experiment
-To run this experiment, you need to install the python packages listed in `requirements.txt`.  
+To run this experiment, you need to install the python packages listed in `requirements.txt`. You can do so using:
+`pip install -r requirements.txt`  
 Then run  
 `python run_experiments.py -p "participant_name"` 
 to run the experiment.
