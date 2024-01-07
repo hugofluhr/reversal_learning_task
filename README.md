@@ -1,5 +1,6 @@
   
-# Experiment for the Scientific Programming Course
+# Experiment for the Scientific Programming Course  
+
 Author: **Hugo Fluhr**  
 **Fall 2023**   
 Programmed in Python using [Psychopy](https://www.psychopy.org/)
